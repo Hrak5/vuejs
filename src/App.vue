@@ -55,10 +55,31 @@
               <td>{{user.age}} {{user.age > 50 ? "Old" : "Young"}}</td>
               <td>
                 <button class="btn btn-danger" @click="deleteUser(user.id)">Delete</button>
+                <button class="btn btn-warning" @click="editUser(user.id)">Edit</button>
               </td>
             </tr>
         </table>
       </div>
+    </div>
+    <div class="my_model" v-if="modals.editUser">
+        <div class="container">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" class="form-control" v-model="editUserData.name">
+            </div>
+          <div class="form-group">
+            <label>surname</label>
+            <input type="text" class="form-control" v-model="editUserData.surname">
+          </div>
+          <div class="form-group">
+            <label>gendre</label>
+            <input type="text" class="form-control" v-model="editUserData.gendre">
+          </div>
+          <div class="form-group">
+            <label>age</label>
+            <input type="text" class="form-control" v-model="editUserData.age">
+          </div>
+        </div>
     </div>
 
   </div>
@@ -84,6 +105,9 @@ export default {
           gendre: "",
           age: ""
         }
+      },
+      modals:{
+        editUser:false,
       }
     }
   },
@@ -91,29 +115,31 @@ export default {
     this.getUsersStorage();
   },
   methods: {
+    editUser(id){
+      const user = this.users.find(user =>{
+        return user.id == id
+      });
+      this.editUserData = {...user}
+      this.modals.editUser = true
+      this.setUsersStorage();
+    },
     randomAge(){
         const age = Math.floor(Math.random() * 100);
         this.newUser.age = age;
     },
     deleteUser(id){
-      console.log(id)
+      this.users = this.users.filter(user =>{
+        return user.id != id
+      });
+      this.setUsersStorage();
     },
     saveUser(){
-      // if (this.newUser.name == ""){
-      //   this.errors.users.name ="Name is required"
-      // }else{
-      //   this.errors.users.name =""
-      // }
+
       this.errors.users.name = this.newUser.name == "" ? "Name is required" : ""
       this.errors.users.surname = this.newUser.surname == "" ? "Surname is required" : ""
       this.errors.users.gendre = this.newUser.gendre == "" ? "Gendre is required" : ""
       this.errors.users.age = this.newUser.age == "" ? "Age is required" : ""
-      // if (this.newUser.surname == ""){
-      //   this.errors.users.surname ="Surname is required"
-      // }
-      // if (this.newUser.gendre == ""){
-      //   this.errors.users.gendre ="Gendre is required"
-      // }
+
       if (this.errors.users.name == "" && this.errors.users.surname == "" && this.errors.users.gendre == "" && this.errors.users.age == ""){
         const user = {};
 
@@ -151,4 +177,17 @@ export default {
 .female{
   background: pink;
 }
+.my_model{
+position: absolute;
+  width: 80%;
+  height: 80vh;
+  background: black;
+  color: white;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+
+  }
 </style>
